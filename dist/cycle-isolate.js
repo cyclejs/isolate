@@ -9,9 +9,8 @@ function checkIsolateArgs(dataflowComponent, scope) {
         throw new Error("First argument given to isolate() must be a " +
             "'dataflowComponent' function");
     }
-    if (typeof scope !== "string") {
-        throw new Error("Second argument given to isolate() must be a " +
-            "string for 'scope'");
+    if (scope === null) {
+        throw new Error("Second argument given to isolate() must not be null");
     }
 }
 function isolateAllSources(sources, scope) {
@@ -31,7 +30,7 @@ function isolateAllSinks(sources, sinks, scope) {
     var scopedSinks = {};
     for (var key in sinks) {
         if (sinks.hasOwnProperty(key)
-            && sources[key]
+            && sources.hasOwnProperty(key)
             && typeof sources[key].isolateSink === "function") {
             scopedSinks[key] = sources[key].isolateSink(sinks[key], scope);
         }
@@ -74,14 +73,21 @@ function isolateAllSinks(sources, sinks, scope) {
 function isolate(component, scope) {
     if (scope === void 0) { scope = newScope(); }
     checkIsolateArgs(component, scope);
+    var convertedScope;
+    if (typeof scope === 'string') {
+        convertedScope = scope;
+    }
+    else if (typeof scope !== 'string') {
+        convertedScope = scope.toString();
+    }
     return function scopedComponent(sources) {
         var rest = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             rest[_i - 1] = arguments[_i];
         }
-        var scopedSources = isolateAllSources(sources, scope);
+        var scopedSources = isolateAllSources(sources, convertedScope);
         var sinks = component.apply(void 0, [scopedSources].concat(rest));
-        var scopedSinks = isolateAllSinks(sources, sinks, scope);
+        var scopedSinks = isolateAllSinks(sources, sinks, convertedScope);
         return scopedSinks;
     };
 }
