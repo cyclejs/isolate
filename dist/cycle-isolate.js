@@ -73,13 +73,7 @@ function isolateAllSinks(sources, sinks, scope) {
 function isolate(component, scope) {
     if (scope === void 0) { scope = newScope(); }
     checkIsolateArgs(component, scope);
-    var convertedScope;
-    if (typeof scope === 'string') {
-        convertedScope = scope;
-    }
-    else if (typeof scope !== 'string') {
-        convertedScope = scope.toString();
-    }
+    var convertedScope = typeof scope === 'string' ? scope : scope.toString();
     return function scopedComponent(sources) {
         var rest = [];
         for (var _i = 1; _i < arguments.length; _i++) {
