@@ -75,12 +75,7 @@ export type Component<So, Si> = (sources: So, ...rest: Array<any>) => Si;
  */
 function isolate<So, Si>(component: Component<So, Si>, scope: any = newScope()): Component<So, Si> {
   checkIsolateArgs(component, scope);
-  let convertedScope: string;
-  if (typeof scope === 'string') {
-    convertedScope = scope;
-  }else if (typeof scope !== 'string') {
-    convertedScope = scope.toString();
-  }
+  let convertedScope: string = typeof scope === 'string' ? scope : scope.toString();
   return function scopedComponent(sources: So, ...rest: Array<any>): Si {
     const scopedSources = isolateAllSources(sources, convertedScope);
     const sinks = component(scopedSources, ...rest);

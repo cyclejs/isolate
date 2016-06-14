@@ -30,7 +30,7 @@ function isolateAllSinks(sources, sinks, scope) {
     var scopedSinks = {};
     for (var key in sinks) {
         if (sinks.hasOwnProperty(key)
-            && sources.hasOwnProperty(key)
+            && sources[key]
             && typeof sources[key].isolateSink === "function") {
             scopedSinks[key] = sources[key].isolateSink(sinks[key], scope);
         }

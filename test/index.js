@@ -28,7 +28,7 @@ describe('isolate', function () {
     function MyDataflowComponent() {}
     assert.doesNotThrow(() => {
       isolate(MyDataflowComponent, 12);
-    }, /Second argument given to isolate\(\) should be converted to string for 'scope'/i);
+    });
   });
 
   it('should return a function', function () {
